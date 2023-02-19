@@ -1,20 +1,4 @@
 <template>
-  <!-- <el-container class="index-con">
-    <el-header class="index-header">
-      <navcon></navcon>
-    </el-header>
-    <el-container class="index-con">
-      <el-aside :class="showclass">
-        <leftnav></leftnav>
-      </el-aside>
-      <el-container class="main-con">
-        <el-main clss="index-main">
-          <router-view></router-view>
-        </el-main>
-      </el-container>
-    </el-container>
-  </el-container> -->
-
   <el-container class="index-con">
     <el-aside :class="showclass">
       <leftnav></leftnav>
@@ -24,7 +8,9 @@
         <navcon></navcon>
       </el-header>
       <el-main clss="index-main">
-        <router-view></router-view>
+        <div class="router-main">
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -80,18 +66,55 @@ export default {
 .aside {
   width: 64px !important;
   height: 100%;
-  background-color: #334157;
+  /* background-color: #334157; */
   margin: 0px;
 }
 .asideshow {
   width: 240px !important;
   height: 100%;
-  background-color: #334157;
+  /* background-color: #334157; */
   margin: 0px;
 }
 .index-header,
 .index-main {
   padding: 0px;
-  border-left: 2px solid #333;
+  /* border-left: 2px solid #333; */
 }
+.el-container .el-container{
+  background: #F1F2F6;
+}
+.el-main{
+  padding: 15px;
+}
+.text-align-right{
+  text-align: right;
+}
+.text-align-center{
+  text-align: center;
+}
+.white-background{
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+}
+.list-top-margin{
+  margin-bottom: 15px;
+}
+.defult-row-margin{
+  margin: 15px 0;
+}
+/* ::-webkit-scrollbar {
+    width: 20px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #e4e4e4;
+    border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 50px;
+} */
 </style>

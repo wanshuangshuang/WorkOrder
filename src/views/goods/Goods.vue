@@ -1,74 +1,199 @@
-/**
- * 基础菜单 商品管理
- */
 <template>
   <div>
-    <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-    </el-breadcrumb>
-    <!-- 搜索筛选 -->
-    <el-form :inline="true" :model="formInline" class="user-search">
-      <el-form-item label="搜索：">
-        <el-input size="small" v-model="formInline.deptName" placeholder="输入部门名称"></el-input>
-      </el-form-item>
-      <el-form-item label="">
-        <el-input size="small" v-model="formInline.deptNo" placeholder="输入部门代码"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-        <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
-      </el-form-item>
-    </el-form>
-    <!--列表-->
-    <el-table size="small" :data="listData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
-      <el-table-column align="center" type="selection" width="60">
-      </el-table-column>
-      <el-table-column sortable prop="deptName" label="部门名称" width="300">
-      </el-table-column>
-      <el-table-column sortable prop="deptNo" label="部门代码" width="300">
-      </el-table-column>
-      <el-table-column sortable prop="editTime" label="修改时间" width="300">
-        <template slot-scope="scope">
-          <div>{{scope.row.editTime|timestampToTime}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column sortable prop="editUser" label="修改人" width="300">
-      </el-table-column>
-      <el-table-column align="center" label="操作" min-width="300">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页组件 -->
-    <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination>
-    <!-- 编辑界面 -->
-    <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click="closeDialog">
-      <el-form label-width="120px" :model="editForm" :rules="rules" ref="editForm">
-        <el-form-item label="部门名称" prop="deptName">
-          <el-input size="small" v-model="editForm.deptName" auto-complete="off" placeholder="请输入部门名称"></el-input>
-        </el-form-item>
-        <el-form-item label="部门代码" prop="deptNo">
-          <el-input size="small" v-model="editForm.deptNo" auto-complete="off" placeholder="请输入部门代码"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeDialog">取消</el-button>
-        <el-button size="small" type="primary" :loading="loading" class="title" @click="submitForm('editForm')">保存</el-button>
+    <div v-if="isShowPanel == 0">
+      <div class="white-background list-top-margin">
+        <!-- 面包屑导航 -->
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item>生产管理</el-breadcrumb-item>
+          <el-breadcrumb-item><span style="color:#000;font-weight:bold;">销售订单</span></el-breadcrumb-item>
+        </el-breadcrumb>
+        <!-- 搜索筛选 -->
+        <el-form  :model="formInline" label-width="100px" class="user-search">
+          <el-row :gutter="5">
+            <el-col :span="7">
+              <el-form-item label="单据编号">
+                <el-input size="small" v-model="formInline.deptName" placeholder="输入单据编号"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="创建人">
+                <el-input size="small" v-model="formInline.deptNo" placeholder="输入创建人姓名"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="合同编号">
+                <el-input size="small" v-model="formInline.deptNo" placeholder="输入合同编号"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="3">
+              <el-form-item label-width="15px">
+                <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+
+          <el-row :gutter="5" v-if="isSearchPanelShow">
+            <el-col :span="7">
+              <el-form-item label="客户名称">
+                <el-input size="small" v-model="formInline.customName" placeholder="输入客户名称"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="创建时间">
+                <el-date-picker
+                  v-model="formInline.createTime"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期" class="date-picker">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="更新人">
+                <el-input size="small" v-model="formInline.updator" placeholder="输入更新人"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="更新时间">
+                <el-date-picker
+                  v-model="formInline.updateTime"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期" class="date-picker">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-divider><i :class="isSearchPanelShow?'el-icon-caret-top':'el-icon-caret-bottom'" @click="expandClick"></i></el-divider>
+        </el-form>
       </div>
-    </el-dialog>
+      <div class="white-background">
+          <el-row class="tbl-btn">
+            <el-col :span="12" class="tbl-btn-left">
+              <el-button size="small" type="primary" icon="el-icon-plus" @click="createSaleOrder">创建销售订单</el-button>
+              <el-button type="text" :disabled="!isBatchPrint">批量打印</el-button>
+              <el-button type="text" icon="el-icon-edit-outline">编辑打印模板</el-button>
+            </el-col>
+            <el-col :span="12" class="tbl-btn-right">
+              <el-button type="primary" size="small" icon="el-icon-setting">移动端卡片配置</el-button>
+              <el-button type="default" size="small" icon="el-icon-s-operation">列配置</el-button>
+            </el-col>
+          </el-row>
+          <!--列表-->
+          <el-table
+          size="small"
+          :data="listData"
+          highlight-current-row
+          v-loading="loading"
+          stripe
+          element-loading-text="加载中"
+          :header-cell-style="_headerStyle"
+          style="width: 100%;"
+          @selection-change="handleTblSelectionChange"
+          >
+            <el-table-column align="center" type="selection" width="60">
+            </el-table-column>
+            <el-table-column align="center" type="index" width="50" label="序号">
+            </el-table-column>
+            <el-table-column sortable prop="deptName" label="单据编号" width="150" >
+              <template slot-scope="scope">
+                <el-tooltip :content="scope.row.deptName" placement="top">
+                  <span class="txt-overflow" >{{scope.row.deptName}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column  label="合同编号" width="150">
+              <template slot-scope="scope">
+                <el-tooltip :content="scope.row.deptNo" placement="top">
+                  <span class="txt-overflow">{{scope.row.deptNo}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+
+            <el-table-column  label="客户名称" width="150">
+              <template slot-scope="scope">
+                <el-tooltip :content="scope.row.deptNo" placement="top">
+                  <span class="txt-overflow">{{scope.row.deptNo}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="工单数" width="60">
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="已结束工单" width="90">
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="计划数" width="60">
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="完工数" width="60">
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="生产进度(%)" width="100">
+            </el-table-column>
+
+            <el-table-column   prop="deptNo" label="单据进度(%)" width="100">
+            </el-table-column>
+            <el-table-column  sortable prop="deptNo" label="创建时间" width="120">
+            </el-table-column>
+            <el-table-column  sortable prop="deptNo" label="更新时间" width="120">
+            </el-table-column>
+            <el-table-column  prop="deptNo" label="创建人" width="80">
+            </el-table-column>
+            <el-table-column   prop="deptNo" label="更新人" width="80">
+            </el-table-column>
+
+            <el-table-column align="center"  label="操作" min-width="190">
+              <template slot-scope="scope">
+                <el-tooltip content="编辑">
+                  <el-button type="primary" size="mini" icon="el-icon-edit" circle  @click="handleEdit(scope.$index, scope.row)"></el-button>
+
+                </el-tooltip>
+                <el-tooltip content="打印">
+                  <el-button type="primary" size="mini" icon="el-icon-printer" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
+
+                </el-tooltip>
+                <el-tooltip content="复制">
+                  <el-button type="primary" size="mini" icon="el-icon-document-copy" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
+
+                </el-tooltip>
+                <el-tooltip content="删除">
+                  <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="deleteUser(scope.$index, scope.row)"></el-button>
+
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- 分页组件 -->
+          <Pagination v-bind:child-msg="pageparm" @callFather="callFather" class="tbl-pagination"></Pagination>
+      </div>
+    </div>
+    <CreateGoods v-if="isShowPanel == 1" @goBack="goBack"></CreateGoods>
   </div>
 </template>
 
 <script>
+import CreateGoods from '@/views/goods/newGoods';
 import { deptList, deptSave, deptDelete } from '../../api/userMG'
 import Pagination from '../../components/Pagination'
 export default {
+  watch:{
+    tblSelectionList(newList,oldList){
+      console.log('newList',newList);
+      this.isBatchPrint = (newList && newList != null && newList.length > 0);
+
+    }
+  },
   data() {
     return {
+
+      isShowPanel:0,
+      isBatchPrint:false,
+      isSearchPanelShow:false,
+      tblSelectionList:[],
+
+      //--------------------------
       nshow: true, //switch开启
       fshow: false, //switch关闭
       loading: false, //是显示加载
@@ -111,7 +236,8 @@ export default {
   },
   // 注册组件
   components: {
-    Pagination
+    Pagination,
+    CreateGoods
   },
   /**
    * 数据发生改变
@@ -143,7 +269,7 @@ export default {
             addTime: 1521062371000,
             editTime: 1526700200000,
             deptId: 2,
-            deptName: 'XX分公司',
+            deptName: 'XX分公司sdfasdfadsfdasdsaffdsdfsdsfaadsf',
             deptNo: '1',
             parentId: 1
           },
@@ -314,6 +440,28 @@ export default {
     // 关闭编辑、增加弹出框
     closeDialog() {
       this.editFormVisible = false
+    },
+
+
+    //-------------------
+    /**
+     * 控制查询面板显示隐藏
+     */
+    expandClick(){
+      this.isSearchPanelShow = !this.isSearchPanelShow;
+    },
+    /**
+     * 监听表格选中项变化事件
+     */
+    handleTblSelectionChange(val){
+      this.tblSelectionList = val;
+    },
+    createSaleOrder(){
+      //this.$router.push({path:'/goods/Goods/create'});
+      this.isShowPanel = 1;
+    },
+    goBack(){
+      this.isShowPanel = 0;
     }
   }
 }
@@ -325,6 +473,42 @@ export default {
 }
 .userRole {
   width: 100%;
+}
+.el-divider__text{
+  padding: 0px 0px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.el-divider--horizontal{
+  margin: 10px 0px;
+}
+.date-picker{
+  width: 100% !important;
+
+}
+.el-input__inner{
+  height: 32px;
+  line-height: 32px;
+  padding: 0px 10px;
+}
+.el-form-item{
+  margin-bottom: 10px;
+}
+.tbl-btn{
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+
+}
+.tbl-btn .tbl-btn-right{
+  text-align: right;
+}
+.tbl-pagination{
+  text-align: right;
+}
+.txt-overflow{
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 </style>
 

@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style> 
+<style>
 html,
 body {
     width: 100%;
@@ -18,13 +18,16 @@ body {
     box-sizing: border-box;
     padding: 0px;
     margin: 0px;
+    font-size: 0;
 }
 #app {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
+    color: #1f273d;
     widows: 100%;
     height: 100%;
+    min-width: 1920px;
+    overflow-x: auto;
 }
 </style>
