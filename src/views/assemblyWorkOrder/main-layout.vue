@@ -7,47 +7,57 @@
           <el-breadcrumb-item :to="{ path: '/' }">生产管理</el-breadcrumb-item>
           <el-breadcrumb-item>装配工单</el-breadcrumb-item>
         </el-breadcrumb>
-        <list-top :form="form" @search="search" class="list-top-margin"></list-top>
+        <list-top :form="form" @search="search" class="list-top-margin" :goodsShow="false"></list-top>
       </div>
       <div class="white-background">
         <el-row class="list-top-margin">
           <el-col :span="6">
-            <el-button size="small" type="primary" icon="el-icon-plus" @click="add()">创建装配工单</el-button>
+            <el-button size="small" type="primary" icon="el-icon-plus" @click="acolumnDataListdd()">创建装配工单</el-button>
             <el-button type="text">批量打印</el-button>
             <el-button type="text" icon="el-icon-edit-outline">编辑打印模板</el-button>
           </el-col>
           <el-col :span="18" class="text-align-right">
             <el-button size="small" type="primary" icon="el-icon-setting">移动卡片配置</el-button>
-            <el-button size="small" icon="el-icon-s-operation">列配置</el-button>
+            <el-popover
+              placement="left-start"
+              title="列配置"
+              width="200"
+              trigger="click"
+              v-model="popIshow"
+              >
+              <popover-content :colData="colData" @done="popDone" v-if="popIshow" ></popover-content>
+              <el-button slot="reference" icon="el-icon-s-operation" size="small" class="left-default-margin">列配置</el-button>
+            </el-popover>
           </el-col>
         </el-row>
         <!--列表-->
-        <el-table size="small" :data="listData" highlight-current-row v-loading="loading" max-height="400px" stripe element-loading-text="拼命加载中" :header-cell-style="_headerStyle" style="width: 100%;">
+        <el-table size="small" :key="uniqueKey" :data="listData" highlight-current-row v-loading="loading" max-height="400px" stripe border element-loading-text="拼命加载中" :header-cell-style="_headerStyle" style="width: 100%;">
           <el-table-column type="selection" width="60">
           </el-table-column>
-          <el-table-column prop="no" label="序号" type="index" width="50"></el-table-column>
-          <el-table-column sortable prop="deptName" label="单据编号" width="180">
+          <el-table-column prop="no" label="序号" type="index" width="50" v-if="colData[0].istrue" :fixed="colData[0].isFixed == true ? 'left':null">
           </el-table-column>
-          <el-table-column  prop="deptNo" label="工单数" width="80">
+          <el-table-column sortable prop="deptName" label="单据编号" width="180" v-if="colData[1].istrue" :fixed="colData[1].isFixed == true ? 'left':null">
           </el-table-column>
-          <el-table-column prop="deptId" label="已结束工单" width="80"></el-table-column>
-          <el-table-column  prop="editUser" label="计划数" width="80"></el-table-column>
-          <el-table-column  prop="editUser" label="完工数" width="80"></el-table-column>
-          <el-table-column  prop="editUser" label="生产进度(%)" width="180">
+          <el-table-column  prop="deptNo" label="工单数" width="80" v-if="colData[2].istrue" :fixed="colData[2].isFixed == true ? 'left':null">
+          </el-table-column>
+          <el-table-column prop="deptId" label="已结束工单" width="90" v-if="colData[3].istrue" :fixed="colData[3].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column  prop="editUser" label="计划数" width="80" v-if="colData[4].istrue" :fixed="colData[4].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column  prop="editUser" label="完工数" width="80" v-if="colData[5].istrue" :fixed="colData[5].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column  prop="editUser" label="生产进度(%)" width="180" v-if="colData[6].istrue" :fixed="colData[6].isFixed == true ? 'left':null">
             <template slot-scope="scope">
               <el-progress :percentage="scope.row.editUser"></el-progress>
             </template>
           </el-table-column>
-          <el-table-column  prop="editUser" label="单据进度(%)" width="180">
+          <el-table-column  prop="editUser" label="单据进度(%)" width="180" v-if="colData[7].istrue" :fixed="colData[7].isFixed == true ? 'left':null">
             <template slot-scope="scope">
               <el-progress :percentage="scope.row.editUser"></el-progress>
             </template>
           </el-table-column>
-          <el-table-column sortable prop="editUser" label="创建时间" width="150"></el-table-column>
-          <el-table-column sortable prop="editUser" label="更新时间" width="150"></el-table-column>
-          <el-table-column  prop="editUser" label="创建人" width="150"></el-table-column>
-          <el-table-column  prop="editUser" label="更新人" width="150"></el-table-column>
-          <el-table-column label="操作" min-width="180" fixed="right">
+          <el-table-column sortable prop="editUser" label="创建时间" width="150" v-if="colData[8].istrue" :fixed="colData[8].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column sortable prop="editUser" label="更新时间" width="150" v-if="colData[9].istrue" :fixed="colData[9].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column  prop="editUser" label="创建人" width="150" v-if="colData[10].istrue" :fixed="colData[10].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column  prop="editUser" label="更新人" width="150" v-if="colData[11].istrue" :fixed="colData[11].isFixed == true ? 'left':null"></el-table-column>
+          <el-table-column label="操作" min-width="180" fixed="right" v-if="colData[12].istrue">
             <template slot-scope="scope">
               <el-tooltip content="编辑">
                 <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
@@ -69,35 +79,23 @@
       </div>
     </div>
     <create-layout v-if="mode !== 'main'" :mode="mode" @done="done"></create-layout>
-    <!-- 编辑界面 -->
-    <!-- <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click="closeDialog">
-      <el-form label-width="120px" :model="editForm" :rules="rules" ref="editForm">
-        <el-form-item label="部门名称" prop="deptName">
-          <el-input size="small" v-model="editForm.deptName" auto-complete="off" placeholder="请请输入部门名称"></el-input>
-        </el-form-item>
-        <el-form-item label="部门代码" prop="deptNo">
-          <el-input size="small" v-model="editForm.deptNo" auto-complete="off" placeholder="请请输入部门代码"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeDialog">取消</el-button>
-        <el-button size="small" type="primary" :loading="loading" class="title" @click="submitForm('editForm')">保存</el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
 import { deptList, deptSave, deptDelete } from '../../api/userMG'
-import Pagination from '../../components/Pagination'
+import Pagination from '@/components/Pagination'
 import ListTop from './list-top.vue'
 import CreateLayout from './create-layout.vue'
+import PopoverContent from '@/components/popover-content.vue'
+
 export default {
   // 注册组件
   components: {
     Pagination,
     ListTop,
     CreateLayout,
+    PopoverContent,
   },
   /**
    * 数据发生改变
@@ -107,6 +105,7 @@ export default {
    * 创建完毕
    */
   created() {
+    this.getColumnDataList()
     this.getdata(this.form)
   },
   data() {
@@ -151,6 +150,9 @@ export default {
         total: 10
       },
       mode:'main',
+      colData:[],
+      popIshow:false,//控制popover显隐
+      uniqueKey:new Date().getTime()
     }
   },
 
@@ -158,6 +160,9 @@ export default {
    * 里面的方法只有被调用才会执行
    */
   methods: {
+    getUniqueKey(){
+      return new Date().getTime()
+    },
     // 获取公司列表
     getdata(parameter) {
       this.loading = true
@@ -249,6 +254,23 @@ export default {
       //     this.loading = false
       //     this.$message.error('菜单加载失败，请稍后再试！')
       //   })
+    },
+    getColumnDataList(){
+     this.colData = [
+     { title: "序号", istrue: true, isFixed:false },
+	   { title: "单据编号", istrue: true, isFixed:false },
+	   { title: "工单数", istrue: true , isFixed:false},
+	   { title: "已结束工单", istrue: true , isFixed:false},
+	   { title: "计划数", istrue: true , isFixed:false},
+	   { title: "完工数", istrue: true, isFixed:false },
+	   { title: "生产进度(%)", istrue: true , isFixed:false},
+	   { title: "单据进度(%)", istrue: true, isFixed:false },
+	   { title: "创建时间", istrue: true, isFixed:false },
+	   { title: "更新时间", istrue: true, isFixed:false },
+	   { title: "创建人", istrue: true , isFixed:false},
+	   { title: "更新人", istrue: true, isFixed:false },
+	   { title: "操作", istrue: true,disabled:true },
+    ]
     },
     // 分页插件事件
     callFather(parm) {
@@ -346,13 +368,21 @@ export default {
       this.editFormVisible = false
     },
     // 新增
-    add:function(){
+    acolumnDataListdd:function(){
       this.mode = 'create'
     },
     done:function(options){
-      console.log('options');
       this.mode = 'main'
     },
+    popDone:function(options){
+      var _this = this
+      this.popIshow = false
+      if(options.type == 'save'){
+        this.colData = JSON.parse(JSON.stringify(options.data))
+        console.log('this.colData',this.colData);
+        this.uniqueKey = this.getUniqueKey()
+      }
+    }
   }
 }
 </script>
@@ -363,7 +393,8 @@ export default {
   width: 100%;
 }
 
-.assembly-work-order .el-button+.el-button, .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+.assembly-work-order .el-button+.el-button,
+.el-checkbox.is-bordered+.el-checkbox.is-bordered{
   margin-left: 5px;
 }
 </style>

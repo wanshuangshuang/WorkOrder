@@ -29,6 +29,7 @@
             highlight-current-row
             v-loading="loading"
             stripe
+            border
             element-loading-text="加载中"
             :header-cell-style="_headerStyle"
             style="width: 100%;"

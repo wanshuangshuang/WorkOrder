@@ -8,7 +8,8 @@
           <el-breadcrumb-item><span style="color:#000;font-weight:bold;">销售订单</span></el-breadcrumb-item>
         </el-breadcrumb>
         <!-- 搜索筛选 -->
-        <el-form  :model="formInline" label-width="100px" class="user-search">
+        <list-top :form="formInline" @search="search" class="list-top-margin" :goodsShow="true"></list-top>
+        <!-- <el-form  :model="formInline" label-width="100px" class="user-search">
           <el-row :gutter="5">
             <el-col :span="7">
               <el-form-item label="单据编号">
@@ -70,7 +71,7 @@
           </el-row>
 
           <el-divider><i :class="isSearchPanelShow?'el-icon-caret-top':'el-icon-caret-bottom'" @click="expandClick"></i></el-divider>
-        </el-form>
+        </el-form> -->
       </div>
       <div class="white-background">
           <el-row class="tbl-btn">
@@ -91,6 +92,7 @@
           highlight-current-row
           v-loading="loading"
           stripe
+          border
           element-loading-text="加载中"
           :header-cell-style="_headerStyle"
           style="width: 100%;"
@@ -177,6 +179,7 @@
 import CreateGoods from '@/views/goods/newGoods';
 import { deptList, deptSave, deptDelete } from '../../api/userMG'
 import Pagination from '../../components/Pagination'
+import ListTop from '../assemblyWorkOrder/list-top.vue'
 export default {
   watch:{
     tblSelectionList(newList,oldList){
@@ -237,7 +240,8 @@ export default {
   // 注册组件
   components: {
     Pagination,
-    CreateGoods
+    CreateGoods,
+    ListTop
   },
   /**
    * 数据发生改变

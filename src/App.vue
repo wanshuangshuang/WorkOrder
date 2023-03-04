@@ -27,7 +27,7 @@ body {
     color: #1f273d;
     widows: 100%;
     height: 100%;
-    min-width: 1920px;
+    min-width: 1900px;
     overflow-x: auto;
 }
 </style>

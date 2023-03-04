@@ -4,7 +4,7 @@
       <leftnav></leftnav>
     </el-aside>
     <el-container class="main-con">
-      <el-header class="index-header">
+      <el-header class="index-header" style="background-color: #1890ff;">
         <navcon></navcon>
       </el-header>
       <el-main clss="index-main">
@@ -75,6 +75,9 @@ export default {
   /* background-color: #334157; */
   margin: 0px;
 }
+.el-menu-vertical-demo:not(.el-menu--collapse){
+  width: 240px;
+}
 .index-header,
 .index-main {
   padding: 0px;
@@ -94,27 +97,102 @@ export default {
 }
 .white-background{
   background-color: #fff;
-  padding: 15px;
+  padding: 20px;
   border-radius: 4px;
 }
 .list-top-margin{
   margin-bottom: 15px;
 }
+.top-default-margin{
+  margin-top: 10px;
+}
+.bottom-mini-margin{
+  margin-bottom: 5px;
+}
+.bottom-small-margin{
+  margin-bottom: 8px;
+}
+.bottom-default-margin{
+  margin-bottom: 10px;
+}
+.left-default-margin{
+  margin-left: 10px;
+}
+.left-large-margin{
+  margin-left: 15px;
+}
+.right-large-margin{
+  margin-right: 15px;
+}
 .defult-row-margin{
   margin: 15px 0;
 }
-/* ::-webkit-scrollbar {
-    width: 20px;
-    height: 12px;
+.small-row-margin{
+  margin: 8px 0;
+}
+.common-font-size{
+  font-size: 16px;
+}
+.default-top-bottom{
+  margin: 15px 0;
+}
+.user-search {
+  margin-top: 20px;
 }
 
-::-webkit-scrollbar-track {
-    background-color: #e4e4e4;
-    border-radius: 50px;
+.default-title{
+  font-size: 16px;
 }
+.question-icon{
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.45);
+  vertical-align: middle;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
+  .full-width{
+    width: 100%;
+  }
+  .list-line-box::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+  }
+  .list-line-box::-webkit-scrollbar-thumb{
+    background-color: #ddd;
+    border-radius: 3px;
+  }
+  /* .el-table__body-wrapper */
+  /* 全局滚动条样式 */
+  ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 3px;
+  }
 
-::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 50px;
-} */
 </style>

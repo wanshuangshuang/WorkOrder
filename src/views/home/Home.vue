@@ -1,11 +1,26 @@
 <template>
-    <div>主页</div>
+  <div class="home-main common-font-size">
+    主页
+  </div>
 </template>
-<script>
+<script type="text/ecmascript-6">
 export default {
-    name:'Home'
+  data() {
+    return {
+
+    }
+  },
+  created() {
+
+  },
+  methods: {
+
+  }
 }
 </script>
-<style scoped>
 
+<style scoped>
+/* .home-main{
+  font-size: 12px;
+} */
 </style>

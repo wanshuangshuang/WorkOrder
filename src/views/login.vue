@@ -2,8 +2,8 @@
   <div class="login-wrap">
     <el-form label-position="left" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm login-container">
       <div class="login-margin">
-        <div class="title" :class="{'not-choose':!isLoginChoose}" @click="changeChoose" style="border-radius: 5px 0 0 5px;">登录</div>
-        <div class="title" :class="{'not-choose':isLoginChoose}" @click="changeChoose" style="border-radius: 0 5px 5px 0;">注册</div>
+        <div class="title" :class="{'not-choose':!isLoginChoose}" @click="changeChoose">登录</div>
+        <div class="title" :class="{'not-choose':isLoginChoose}" @click="changeChoose">注册</div>
       </div>
       <!-- 登录页 -->
       <div v-if="isLoginChoose">
@@ -87,10 +87,6 @@ export default {
   },
   // 创建完毕状态(里面是操作)
   created() {
-    this.$message({
-      message: '账号密码不为空即可',
-      type: 'success'
-    })
     // 获取存在本地的用户名密码
     this.getuserpwd()
 
@@ -190,30 +186,24 @@ export default {
   text-align: left;
   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
 }
-/* .title {
-  margin: 0px auto 40px auto;
-  text-align: center;
-  color: #505458;
-} */
 .remember {
   margin: 0px 0px 35px 0px;
 }
 .login-wrap .title{
   display: inline-block;
-  width: 142px;
+  width: 41%;
   text-align: center;
   font-size: 18px;
+  font-weight: bold;
   padding: 12px 15px;
   color: #fff;
   cursor: pointer;
-  background-color: #1890ff;
+  color: #1890ff;
+  border-bottom: 1px solid #1890ff;
 }
-/* .login-wrap .choose{
-
-} */
 .login-wrap .not-choose{
-  color: #87CEEB;
-  background-color: rgba(30,144,255,0.8);
+  border-bottom: none;
+  color: #1f273d;
 }
 .login-margin{
   margin-bottom: 30px;

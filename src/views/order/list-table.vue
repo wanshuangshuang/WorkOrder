@@ -5,54 +5,56 @@
       <el-table-column type="selection" width="60">
       </el-table-column>
       <el-table-column prop="no" label="序号" type="index" width="50"></el-table-column>
-      <el-table-column sortable prop="deptName" label="层级编号" width="180">
+      <el-table-column sortable prop="deptName" label="工序名称" width="180">
       </el-table-column>
-      <el-table-column  prop="deptNo" label="产品编号" width="80">
+      <el-table-column  prop="deptNo" label="工序编号" width="180">
+        <template slot-scope="scope">
+          <span>{{scope.row.deptNo}}</span>
+          <el-tag v-for="(item,index) in scope.row.status" :type="changeStatusColor(item)" :key="item" style="height:28px;margin-left: 4px;" :style="{'marginBottom':(index!=scope.row.status.length-1)?'8px':'0'}">{{item}}</el-tag>
+        </template>
       </el-table-column>
-      <el-table-column prop="deptId" label="产品名称" width="80"></el-table-column>
-      <el-table-column  prop="editUser" label="产品规格" width="80"></el-table-column>
-      <el-table-column  prop="editUser" label="产品属性" width="80"></el-table-column>
-      <el-table-column  prop="editUser" label="单位" width="180">
+      <el-table-column prop="deptId" label="报工权限" width="80"></el-table-column>
+      <el-table-column  prop="editUser" label="报工数配比" width="120"></el-table-column>
+      <el-table-column  prop="editUser" label="计划数" width="80"></el-table-column>
+      <el-table-column  prop="editUser" label="良品数" width="180">
       </el-table-column>
-      <el-table-column  prop="editUser" label="单位用量" width="180">
+      <el-table-column  prop="editUser" label="不良品数" width="180">
       </el-table-column>
-      <el-table-column sortable prop="editUser" label="数量" width="150"></el-table-column>
-      <el-table-column sortable prop="editUser" label="工单编号" width="150"></el-table-column>
-      <el-table-column  prop="editUser" label="状态" width="150"></el-table-column>
-      <el-table-column  prop="editUser" label="生产进度" width="150"></el-table-column>
-      <el-table-column  prop="editUser" label="备注" width="150"></el-table-column>
-      <el-table-column  prop="editUser" label="完成数" width="150"></el-table-column>
-      <el-table-column  prop="editUser" label="不良品数" width="150"></el-table-column>
+      <el-table-column sortable prop="editUser" label="不良品项列表" width="150"></el-table-column>
+      <el-table-column sortable prop="editUser" label="计划开始时间" width="150"></el-table-column>
+      <el-table-column  prop="editUser" label="计划结束时间" width="150"></el-table-column>
+      <el-table-column  prop="editUser" label="实际开始时间" width="150"></el-table-column>
+      <el-table-column  prop="editUser" label="实际结束时间" width="150"></el-table-column>
       <el-table-column label="操作" min-width="180" fixed="right">
         <template slot-scope="scope">
           <el-tooltip content="编辑">
             <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
           </el-tooltip>
-          <el-tooltip content="打印">
-            <el-button type="primary" size="mini" icon="el-icon-printer" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
-          </el-tooltip>
-          <el-tooltip content="复制">
-            <el-button type="primary" size="mini" icon="el-icon-document-copy" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
-          </el-tooltip>
           <el-tooltip content="删除">
-            <el-button size="mini" type="primary" icon="el-icon-delete" circle @click="deleteUser(scope.$index, scope.row)"></el-button>
+            <el-button size="mini" type="primary" icon="el-icon-delete" circle @click="delete(scope.$index, scope.row)"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
     <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination>
+      <!-- 编辑工序弹窗 -->
+      <el-dialog title="编辑工序" :visible.sync="orderVisible" width="50%" @cancel="closeOrder">
+      <order-detail v-if="orderVisible" @done="closeOrder" :editRow="editRow"></order-detail>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { deptList, deptSave, deptDelete } from '../../api/userMG'
 import Pagination from '@/components/Pagination'
+import OrderDetail from "@/views/order/dialogManage/order-detail.vue";
 export default {
   props:['formData'],
   // 注册组件
   components: {
     Pagination,
+    OrderDetail,
   },
   /**
    * 数据发生改变
@@ -104,6 +106,8 @@ export default {
         total: 10
       },
       mode:'main',
+      orderVisible:false,
+      editRow:{},//编辑工序对象
     }
   },
 
@@ -128,7 +132,8 @@ export default {
             deptId: 2,
             deptName: 'XX分公司',
             deptNo: '1',
-            parentId: 1
+            parentId: 1,
+            status:['延期']
           },
           {
             addUser: null,
@@ -214,32 +219,33 @@ export default {
       this.getdata(this.form)
     },
     // 删除公司
-    deleteUser(index, row) {
+    delete(index, row) {
       this.$confirm('确定要删除吗?', '信息', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          deptDelete(row.deptId)
-            .then(res => {
-              if (res.success) {
-                this.$message({
-                  type: 'success',
-                  message: '公司已删除!'
-                })
-                this.getdata(this.form)
-              } else {
-                this.$message({
-                  type: 'info',
-                  message: res.msg
-                })
-              }
-            })
-            .catch(err => {
-              this.loading = false
-              this.$message.error('公司删除失败，请稍后再试！')
-            })
+
+          // deptDelete(row.deptId)
+          //   .then(res => {
+          //     if (res.success) {
+          //       this.$message({
+          //         type: 'success',
+          //         message: '公司已删除!'
+          //       })
+          //       this.getdata(this.form)
+          //     } else {
+          //       this.$message({
+          //         type: 'info',
+          //         message: res.msg
+          //       })
+          //     }
+          //   })
+          //   .catch(err => {
+          //     this.loading = false
+          //     this.$message.error('公司删除失败，请稍后再试！')
+          //   })
         })
         .catch(() => {
           this.$message({
@@ -247,6 +253,22 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    handleEdit(index, row){
+      this.orderVisible = true
+      this.editRow = row
+    },
+    closeOrder(){
+      this.orderVisible = false
+    },
+    changeStatusColor(options){
+      if(options == '延期'){
+        return 'danger'
+      }else if(options == '执行中'){
+        return 'success'
+      }{
+        return ''
+      }
     },
   }
 }

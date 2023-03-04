@@ -31,7 +31,7 @@ import WorkReport from '@/views/workReport/WorkReport';
  * 库存管理
  */
 
- //入库单
+//入库单
 import WarehousingOrder from '@/views/stockManagement/warehousingOrder/WarehousingOrder';
 //出库单
 import OutboundOrder from '@/views/stockManagement/outboundOrder/OutboundOrder';
@@ -69,7 +69,7 @@ import PerformAllocation from '@/views/basicData/performAllocation/PerformAlloca
 
 
 
- 
+
 
 /* 在创建router实例对象之前，手动覆盖原型链的push来吞掉报错catch */
 // 先存储默认底层的push
@@ -274,7 +274,7 @@ export default new Router({
             },
 
 
-            
+
         ]
     }]
 })
